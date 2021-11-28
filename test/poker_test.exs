@@ -244,4 +244,21 @@ defmodule PokerTest do
     end)
     |> IO.inspect()
   end
+
+  test "find best hand out of seven cards" do
+    hand = ["6C", "7C", "8C", "9C", "TC", "5C", "JS"]
+    hand_expected = [["6C", "7C", "8C", "9C", "TC"]]
+    hand_actual = Poker.best_possible_hand(hand)
+    assert hand_actual == hand_expected
+
+    hand = ["TD", "TC", "TH", "7C", "7D", "8C", "8S"]
+    hand_expected = [["TD", "TC", "TH", "8C", "8S"]]
+    hand_actual = Poker.best_possible_hand(hand)
+    assert hand_actual == hand_expected
+
+    hand = ["JD", "TC", "TH", "7C", "7D", "7S", "7H"]
+    hand_expected = [["JD", "7C", "7D", "7S", "7H"]]
+    hand_actual = Poker.best_possible_hand(hand)
+    assert hand_actual == hand_expected
+  end
 end
