@@ -214,19 +214,19 @@ defmodule PokerTest do
     # https://en.wikipedia.org/wiki/Poker_probability
     # use this to run a true simulation, otherwise it takes too long to run so a small
     # sample size is used to get the test suite to run quickly
-    # sample_size = div(700_000, 10)
-    sample_size = div(100, 10)
+    sample_size = div(700_000, 10)
+    # sample_size = div(100, 10)
 
     hand_names = [
-      "Straight Flush",
-      "Four of a Kind",
-      "Full House",
-      "Flush",
-      "Straight",
-      "Three of a Kind",
-      "Two pair",
-      "One Pair",
-      "High Card"
+      "Straight Flush (0.0013)",
+      "Four of a Kind (0.0240)",
+      "Full House (0.144)",
+      "Flush (0.196)",
+      "Straight (0.392)",
+      "Three of a Kind (2.112)",
+      "Two pair (4.753)",
+      "One Pair (42.256)",
+      "High Card (50.117)"
     ]
 
     Stream.flat_map(1..sample_size, fn _ ->
@@ -240,7 +240,7 @@ defmodule PokerTest do
     end)
     |> Enum.reverse()
     |> Enum.with_index(fn x, index ->
-      {Enum.at(hand_names, index), 10 * (x / sample_size)}
+      {Enum.at(hand_names, index), Float.round(10 * (x / sample_size), 3)}
     end)
     |> IO.inspect()
   end
