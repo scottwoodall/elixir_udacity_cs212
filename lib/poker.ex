@@ -29,8 +29,8 @@ defmodule Poker do
       {_, max_rank} =
         Enum.max_by(
           acc,
-          fn y ->
-            {_, sort_rank} = y
+          fn x ->
+            {_, sort_rank} = x
             sort_rank
           end,
           fn -> {[], {0, 0, 0}} end
