@@ -152,7 +152,6 @@ defmodule PokerTest do
     assert actual == expected
   end
 
-  """
   test "straight flush beats 100 full houses" do
     straight_flush = ["6C", "7C", "8C", "9C", "TC"]
     full_house = ["TD", "TC", "TH", "7C", "7D"]
@@ -162,7 +161,6 @@ defmodule PokerTest do
     actual = Poker.play(hands)
     assert actual == expected
   end
-  """
 
   test "four of a kind over full house" do
     four_of_a_kind = ["9D", "9H", "9S", "9C", "7D"]
@@ -182,7 +180,7 @@ defmodule PokerTest do
     assert actual == expected
   end
 
-  test "full house equal to full house" do
+  test "full house ties to full house" do
     full_house_p1 = ["TD", "TC", "TH", "7C", "7D"]
     full_house_p2 = ["TS", "TC", "TH", "7S", "7H"]
     high_card = ["2S", "5D", "7H", "9S", "JH"]
@@ -203,18 +201,47 @@ defmodule PokerTest do
     assert Enum.count(hands) == num_hands
   end
 
-  test "hand rank percentages are close to wikipedia percentages" do
-    sample_size = 1
-    counts = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+  test "king high beats queen high" do
+    king_high = ["4C", "6S", "8H", "TD", "KS"]
+    queen_high = ["3D", "5C", "7D", "9C", "QS"]
+    hands = [king_high, queen_high]
+    expected = [king_high]
+    actual = Poker.play(hands)
+    assert actual == expected
+  end
 
-    Enum.each(1..sample_size, fn _ ->
+  test "hand rank probabilities are close to wikipedia probabilities" do
+    # https://en.wikipedia.org/wiki/Poker_probability
+    # use this to run a true simulation, otherwise it takes too long to run so a small
+    # sample size is used to get the test suite to run quickly
+    # sample_size = div(700_000, 10)
+    sample_size = div(100, 10)
+
+    hand_names = [
+      "Straight Flush",
+      "Four of a Kind",
+      "Full House",
+      "Flush",
+      "Straight",
+      "Three of a Kind",
+      "Two pair",
+      "One Pair",
+      "High Card"
+    ]
+
+    Stream.flat_map(1..sample_size, fn _ ->
       deck = Poker.new_deck() |> Poker.shuffle_deck()
       {hands, _} = Poker.deal(10, deck)
-
-      Enum.each(hands, fn hand ->
-        ranking = Poker.hand_rank(hand)
-        # ^counts = List.update_at(counts, Kernel.elem(ranking, 0), &(&1 + 1))
-      end)
+      hands
     end)
+    |> Stream.map(&Poker.hand_rank/1)
+    |> Enum.reduce([0, 0, 0, 0, 0, 0, 0, 0, 0], fn x, acc ->
+      List.update_at(acc, Kernel.elem(x, 0), &(&1 + 1))
+    end)
+    |> Enum.reverse()
+    |> Enum.with_index(fn x, index ->
+      {Enum.at(hand_names, index), 10 * (x / sample_size)}
+    end)
+    |> IO.inspect()
   end
 end
