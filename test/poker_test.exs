@@ -214,8 +214,8 @@ defmodule PokerTest do
     # https://en.wikipedia.org/wiki/Poker_probability
     # use this to run a true simulation, otherwise it takes too long to run so a small
     # sample size is used to get the test suite to run quickly
-    sample_size = div(700_000, 10)
-    # sample_size = div(100, 10)
+    # sample_size = div(700_000, 10)
+    sample_size = div(100, 10)
 
     hand_names = [
       "Straight Flush (0.0013)",
