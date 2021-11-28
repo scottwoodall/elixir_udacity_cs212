@@ -185,10 +185,12 @@ defmodule Poker do
 
   def kind(n, ranks) do
     frequencies = Enum.frequencies(ranks)
-    kinds = Enum.map(ranks, fn x -> {x, Map.get(frequencies, x)} end)
-    bro = Enum.filter(kinds, fn {_, value} -> value == n end)
-    rank = List.first(bro, {nil, nil})
-    Kernel.elem(rank, 0)
+
+    ranks
+    |> Enum.map(fn x -> {x, Map.get(frequencies, x)} end)
+    |> Enum.filter(fn {_, value} -> value == n end)
+    |> List.first({nil, nil})
+    |> Kernel.elem(0)
   end
 
   def kind?(n, ranks) do
