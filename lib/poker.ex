@@ -133,9 +133,14 @@ defmodule Poker do
 
   def card_ranks(hand) do
     rankings = [nil, nil, "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
-    cards = for card <- hand, do: String.first(card)
-    ranks = for rank <- cards, do: Enum.find_index(rankings, fn x -> x == rank end)
-    sorted = Enum.sort(ranks, :desc)
+
+    sorted =
+      hand
+      |> Enum.map(fn x ->
+        card = String.first(x)
+        Enum.find_index(rankings, fn x -> x == card end)
+      end)
+      |> Enum.sort(:desc)
 
     cond do
       # edge case where ace is used in low straight
